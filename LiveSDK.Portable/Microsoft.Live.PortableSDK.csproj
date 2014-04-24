@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC6A1863-AEF0-4B49-B905-415DA33F8C33}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.Live</RootNamespace>
+    <AssemblyName>Microsoft.Live.Portable</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile344</TargetFrameworkProfile>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DESKTOP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Internal\ApiMethod.cs" />
+    <Compile Include="Internal\AuthConstant.cs" />
+    <Compile Include="Internal\AuthEndpointsInfo.cs" />
+    <Compile Include="Internal\AuthErrorCodes.cs" />
+    <Compile Include="Internal\Transfers\BasicTransferProvider.cs" />
+    <Compile Include="Internal\DisplayType.cs" />
+    <Compile Include="Internal\DynamicDictionary.cs" />
+    <Compile Include="Internal\HttpMethods.cs" />
+    <Compile Include="Internal\HttpWebExtensionMethods.cs" />
+    <Compile Include="Internal\IAuthClient.cs" />
+    <Compile Include="Internal\IServerResponseReaderObserver.cs" />
+    <Compile Include="Internal\IWebRequestFactory.cs" />
+    <Compile Include="Internal\LiveAuthClientCore.cs" />
+    <Compile Include="Internal\LiveDownloadOperationResult.cs" />
+    <Compile Include="Internal\Operations\ApiOperation.cs" />
+    <Compile Include="Internal\Operations\ApiWriteOperation.cs" />
+    <Compile Include="Internal\Operations\DownloadOperation.cs" />
+    <Compile Include="Internal\Operations\GetUploadLinkOperation.cs" />
+    <Compile Include="Internal\Operations\Operation.cs" />
+    <Compile Include="Internal\Operations\OperationStatus.cs" />
+    <Compile Include="Internal\Operations\StreamCopyOperation.cs" />
+    <Compile Include="Internal\Operations\UploadOperation.cs" />
+    <Compile Include="Internal\Operations\WebOperation.cs" />
+    <Compile Include="Internal\Platform.cs" />
+    <Compile Include="Internal\QueryParameters.cs" />
+    <Compile Include="Internal\ResourceHelper.cs" />
+    <Compile Include="Internal\ResponseType.cs" />
+    <Compile Include="Internal\Serialization\IJsonSerializable.cs" />
+    <Compile Include="Internal\Serialization\IndentedTextWriter.cs" />
+    <Compile Include="Internal\Serialization\JsonReader.cs" />
+    <Compile Include="Internal\Serialization\JsonWriter.cs" />
+    <Compile Include="Internal\ServerResponseReader.cs" />
+    <Compile Include="Internal\StringBuilderExtension.cs" />
+    <Compile Include="Internal\SynchronizationContextWrapper.cs" />
+    <Compile Include="Internal\Transfers\ForegroundUploadOperation.cs" />
+    <Compile Include="Internal\Utilities\ErrorText.Designer.cs" />
+    <Compile Include="Internal\Utilities\ErrorText1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorText.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Internal\Utilities\LiveAuthRequestUtility.cs" />
+    <Compile Include="Internal\Utilities\LiveAuthUtility.cs" />
+    <Compile Include="Internal\Utilities\LiveUtility.cs" />
+    <Compile Include="Internal\WebRequestFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Public\IRefreshTokenHandler.cs" />
+    <Compile Include="Public\IBackgroundTransferProvider.cs" />
+    <Compile Include="Public\IFileSource.cs" />
+    <Compile Include="Public\LiveAuthClient.cs" />
+    <Compile Include="Public\LiveAuthException.cs" />
+    <Compile Include="Public\LiveConnectClient.cs" />
+    <Compile Include="Public\LiveConnectClientTaskAsync.cs" />
+    <Compile Include="Public\LiveConnectClientTransfers.cs" />
+    <Compile Include="Public\LiveConnectException.cs" />
+    <Compile Include="Public\LiveConnectSession.cs" />
+    <Compile Include="Public\LiveConnectSessionStatus.cs" />
+    <Compile Include="Public\LiveLoginResult.cs" />
+    <Compile Include="Public\LiveOperationProgress.cs" />
+    <Compile Include="Public\LiveOperationResult.cs" />
+    <Compile Include="Public\OverwriteOption.cs" />
+    <Compile Include="Public\RefreshTokenInfo.cs" />
+    <Compile Include="Public\ThemeType.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Internal\Utilities\ErrorText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorText1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\portable-net40+sl4+win8+wp71+wpa81\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\portable-net40+sl5+win8+wp8+wpa81\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\portable-net40+sl5+win8+wp8+wpa81\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\portable-net40+sl5+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
