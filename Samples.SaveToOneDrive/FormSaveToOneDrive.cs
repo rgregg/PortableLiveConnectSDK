@@ -15,7 +15,7 @@ namespace OneDriveSamples.SaveToOneDrive
 {
     public partial class FormSaveToOneDrive : Form, IRefreshTokenHandler
     {
-        private const string OAuthDesktopEndPoint = "https://login.live.com/oauth20_desktop.srf";
+        
         private LiveAuthClient AuthClient;
         private OneDriveClient OneDrive;
         
@@ -60,17 +60,14 @@ namespace OneDriveSamples.SaveToOneDrive
             
             if (null == OneDrive)
             {
-                if (string.IsNullOrEmpty(Properties.Settings.Default.RefreshToken))
+                this.OneDrive = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, new string[] { "wl.skydrive_update" });
+                if (null == this.OneDrive)
                 {
-                    await PromptForLogin();
-                }
-                else
-                {
-                    LiveLoginResult result = await AuthClient.IntializeAsync(this.GetAuthScopes());
-                    LiveConnectSession session = result.Session;
-                    OneDrive = new OneDriveClient(new LiveConnectClient(session));
+                    MessageBox.Show("Failed to connect to OneDrive. Try again later.");
+                    return;
                 }
             }
+            
             try
             {
                 await UploadFileToOneDrive(selectedFile);
@@ -80,23 +77,6 @@ namespace OneDriveSamples.SaveToOneDrive
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-
-            
-        }
-
-
-        private async Task PromptForLogin()
-        {
-            string startUrl = AuthClient.GetLoginUrl(this.GetAuthScopes());
-            string endUrl = OAuthDesktopEndPoint;
-            FormMicrosoftAccountAuth authForm = new FormMicrosoftAccountAuth(startUrl, endUrl);
-            DialogResult result = authForm.ShowDialog(this);
-            if (DialogResult.OK == result)
-            {
-                await OnAuthComplete(authForm.AuthResult);
-            }
-
-            authForm.Dispose();
         }
 
         private async Task UploadFileToOneDrive(IFileSource fileToUpload)
@@ -114,31 +94,9 @@ namespace OneDriveSamples.SaveToOneDrive
             outputStream.Close();
         }
 
-        private async Task<bool> OnAuthComplete(AuthResult result)
-        {
-            if (null != result.AuthorizeCode)
-            {
-                try
-                {
-                    LiveConnectSession session = await this.AuthClient.ExchangeAuthCodeAsync(result.AuthorizeCode);
-                    OneDrive = new OneDriveClient(new LiveConnectClient(session));
-                    Properties.Settings.Default.RefreshToken = session.RefreshToken;
-                    return true;
-                }
-                catch (LiveAuthException aex)
-                {
-                    MessageBox.Show(aex.Message);
-                }
-                catch (LiveConnectException cex)
-                {
-                    MessageBox.Show(cex.Message);
-                }
-            }
+        
 
-            return false;
-        }
-
-        private void LogInToOneDrive()
+        private async Task LogInToOneDrive()
         {
             
         }
