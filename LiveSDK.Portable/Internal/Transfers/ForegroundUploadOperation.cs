@@ -23,7 +23,11 @@ namespace Microsoft.Live.Transfers
             this.FileSource = inputFile;
         }
 
-
+        protected override void OnExecute()
+        {
+ 	         base.OnExecute();
+        }
+        
 
 
     }

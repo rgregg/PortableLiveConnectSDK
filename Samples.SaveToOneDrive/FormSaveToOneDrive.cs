@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using Microsoft.OneDrive;
 
 namespace OneDriveSamples.SaveToOneDrive
@@ -43,6 +44,20 @@ namespace OneDriveSamples.SaveToOneDrive
 
         private async void buttonUploadToOneDrive_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(textBoxLocalFile.Text))
+            {
+                MessageBox.Show("Select a file to upload first");
+                return;
+            }
+
+            if (!File.Exists(textBoxLocalFile.Text))
+            {
+                MessageBox.Show("File path is invalid. Select a valid file and try again.");
+                return;
+            }
+
+            DesktopFileSource selectedFile = new DesktopFileSource(textBoxLocalFile.Text);
+            
             if (null == OneDrive)
             {
                 if (string.IsNullOrEmpty(Properties.Settings.Default.RefreshToken))
@@ -56,8 +71,17 @@ namespace OneDriveSamples.SaveToOneDrive
                     OneDrive = new OneDriveClient(new LiveConnectClient(session));
                 }
             }
+            try
+            {
+                await UploadFileToOneDrive(selectedFile);
+                MessageBox.Show("File uploaded: " + selectedFile.Filename);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
 
-            await UploadFileToOneDrive(textBoxLocalFile.Text);
+            
         }
 
 
@@ -75,11 +99,12 @@ namespace OneDriveSamples.SaveToOneDrive
             authForm.Dispose();
         }
 
-        private async Task UploadFileToOneDrive(string pathToFile)
+        private async Task UploadFileToOneDrive(IFileSource fileToUpload)
         {
             OneDriveItem rootFolder = await OneDrive.GetOneDriveRootAsync();
             OneDriveItem[] itemsInRootFolder = await rootFolder.GetChildItemsAsync();
 
+            await rootFolder.UploadFileAsync(fileToUpload, OverwriteOption.Rename, null);
         }
 
         private async Task<bool> OnAuthComplete(AuthResult result)

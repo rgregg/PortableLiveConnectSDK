@@ -10,17 +10,18 @@ namespace Microsoft.Live.Transfers
     /// Implements a transfer provider that does not support background transfers. Used on platforms where no
     /// special background upload/download semantics exist.
     /// </summary>
-    internal class BasicTransferProvider : IBackgroundTransferProvider
+    public class BasicTransferProvider : IBackgroundTransferProvider
     {
-
-        public DownloadOperation GetDownloadOperation(LiveConnectClient client, Uri url, IFileSource outputFile, IProgress<LiveOperationProgress> progress)
+        public DownloadOperation GetDownloadOperation(LiveConnectClient client, Uri url, IFileSource outputFile, IProgress<LiveOperationProgress> progress, SynchronizationContextWrapper syncContext)
         {
-            throw new NotImplementedException();
+            // TODO: This is include since we aren't download to outputFile.
+            var downloadOp = new DownloadOperation(client, url, progress, syncContext);
+            return downloadOp;
         }
 
-        public ApiOperation GetUploadOperation(LiveConnectClient client, Uri url, IFileSource intputFile, OverwriteOption option, IProgress<LiveOperationProgress> progress)
+        public ApiOperation GetUploadOperation(LiveConnectClient client, Uri url, IFileSource inputFile, OverwriteOption option, IProgress<LiveOperationProgress> progress, SynchronizationContextWrapper syncContext)
         {
-            throw new NotImplementedException();
+            return new UploadOperation(client, url, inputFile.Filename, inputFile.GetReadStream(), option, progress, syncContext);
         }
     }
 }

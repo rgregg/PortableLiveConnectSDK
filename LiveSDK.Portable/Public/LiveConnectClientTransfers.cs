@@ -72,7 +72,7 @@ namespace Microsoft.Live
 
             var tcs = new TaskCompletionSource<LiveDownloadOperationResult>();
 
-            var op = btu.GetDownloadOperation(this, this.GetResourceUri(path, ApiMethod.Download), destination, progress);
+            var op = btu.GetDownloadOperation(this, this.GetResourceUri(path, ApiMethod.Download), destination, progress, syncContext);
             op.OperationCompletedCallback = (LiveDownloadOperationResult result) =>
             {
                 if (result.IsCancelled)
@@ -131,7 +131,12 @@ namespace Microsoft.Live
                     "fileName"));
             }
 
-            ApiOperation op = btu.GetUploadOperation(this, this.GetResourceUri(path, ApiMethod.Upload), fileSource, option, progress);
+            if (null == btu)
+            {
+                btu = new Microsoft.Live.Transfers.BasicTransferProvider();
+            }
+
+            ApiOperation op = btu.GetUploadOperation(this, this.GetResourceUri(path, ApiMethod.Upload), fileSource, option, progress, syncContext);
             return this.ExecuteApiOperation(op, ct);
         }
 

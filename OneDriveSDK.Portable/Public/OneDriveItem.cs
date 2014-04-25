@@ -73,16 +73,18 @@ namespace Microsoft.OneDrive
             return objects.ToArray();
         }
 
-        public async Task<OneDriveItem> UploadFileFromPathAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp)
+        public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null)
         {
-            var result = await Client.LiveClient.UploadAsync(string.Format("/{0}/files/{1}", 
-                this.Identifier, 
-                sourceItem.Filename), 
+            LiveOperationResult result = await Client.LiveClient.UploadAsync(
+                string.Format("/{0}",  this.Identifier), 
                 sourceItem, 
                 option, 
                 btp);
 
-            return null;
+            System.Diagnostics.Debug.WriteLine("UploadFile Result: {0}", result.RawResult);
+
+            FileUploadResult fur = FileUploadResult.FromJson(result.RawResult);
+            return await this.Client.GetFileProperties(fur.Identifier);
         }
 
 

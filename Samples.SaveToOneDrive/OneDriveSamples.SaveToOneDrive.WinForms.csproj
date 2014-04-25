@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthResult.cs" />
+    <Compile Include="DesktopFileSource.cs" />
     <Compile Include="FormMicrosoftAccountAuth.cs">
       <SubType>Form</SubType>
     </Compile>

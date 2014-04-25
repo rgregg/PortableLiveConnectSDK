@@ -7,6 +7,8 @@ namespace Microsoft.Live
 {
     public interface IFileSource
     {
-        string Filename { get; set; }
+        string Filename { get; }
+
+        System.IO.Stream GetReadStream();
     }
 }

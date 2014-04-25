@@ -23,5 +23,12 @@ namespace Microsoft.OneDrive
             System.Diagnostics.Debug.WriteLine("json: {0}", result.RawResult);
             return OneDriveItem.CreateFromRawJson(result.RawResult, this);
         }
+
+        internal async Task<OneDriveItem> GetFileProperties(string fileResourceIdentifier)
+        {
+            LiveOperationResult result = await this.LiveClient.GetAsync(string.Format("/{0}", fileResourceIdentifier));
+            System.Diagnostics.Debug.WriteLine("json: {0}", result.RawResult);
+            return OneDriveItem.CreateFromRawJson(result.RawResult, this);
+        }
     }
 }

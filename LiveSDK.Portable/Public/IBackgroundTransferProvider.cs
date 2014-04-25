@@ -8,7 +8,7 @@ namespace Microsoft.Live
 {
     public interface IBackgroundTransferProvider
     {
-        DownloadOperation GetDownloadOperation(LiveConnectClient client, Uri url, IFileSource outputFile, IProgress<LiveOperationProgress> progress);
-        ApiOperation GetUploadOperation(LiveConnectClient client, Uri url, IFileSource intputFile, OverwriteOption option, IProgress<LiveOperationProgress> progress);
+        DownloadOperation GetDownloadOperation(LiveConnectClient client, Uri url, IFileSource outputFile, IProgress<LiveOperationProgress> progress, SynchronizationContextWrapper syncContext);
+        ApiOperation GetUploadOperation(LiveConnectClient client, Uri url, IFileSource intputFile, OverwriteOption option, IProgress<LiveOperationProgress> progress, SynchronizationContextWrapper syncContext);
     }
 }
