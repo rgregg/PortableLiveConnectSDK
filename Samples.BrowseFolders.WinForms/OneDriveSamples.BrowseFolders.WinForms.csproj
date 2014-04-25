@@ -44,6 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Samples.SaveToOneDrive\FormMicrosoftAccountAuth.cs">
+      <Link>FormMicrosoftAccountAuth.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\Samples.SaveToOneDrive\FormMicrosoftAccountAuth.designer.cs">
+      <Link>FormMicrosoftAccountAuth.designer.cs</Link>
+      <DependentUpon>FormMicrosoftAccountAuth.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormBrowseOneDrive.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -52,6 +60,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\Samples.SaveToOneDrive\FormMicrosoftAccountAuth.resx">
+      <Link>FormMicrosoftAccountAuth.resx</Link>
+      <DependentUpon>FormMicrosoftAccountAuth.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormBrowseOneDrive.resx">
       <DependentUpon>FormBrowseOneDrive.cs</DependentUpon>
     </EmbeddedResource>
@@ -77,6 +89,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LiveSDK.Portable\Microsoft.Live.PortableSDK.csproj">
+      <Project>{dc6a1863-aef0-4b49-b905-415da33f8c33}</Project>
+      <Name>Microsoft.Live.PortableSDK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OneDriveSDK.Portable\Microsoft.OneDriveSDK.csproj">
+      <Project>{0e40a291-7d47-43c7-b76e-3444e04a6099}</Project>
+      <Name>Microsoft.OneDriveSDK</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

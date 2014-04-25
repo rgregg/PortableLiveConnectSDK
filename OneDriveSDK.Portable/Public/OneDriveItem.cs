@@ -90,6 +90,12 @@ namespace Microsoft.OneDrive
 
             var serializer = new JsonSerializer();
             var objects = serializer.Deserialize<List<OneDriveItem>>(dataReader);
+
+            foreach (OneDriveItem item in objects)
+            {
+                item.Client = this.Client;
+            }
+
             return objects.ToArray();
         }
 

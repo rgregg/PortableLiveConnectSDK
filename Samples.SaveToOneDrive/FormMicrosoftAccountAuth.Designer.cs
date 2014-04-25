@@ -1,4 +1,4 @@
-﻿namespace OneDriveSamples.SaveToOneDrive
+﻿namespace OneDriveSamples
 {
     partial class FormMicrosoftAccountAuth
     {

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OneDriveSamples.SaveToOneDrive
+namespace OneDriveSamples
 {
     public partial class FormMicrosoftAccountAuth : Form
     {
@@ -108,7 +108,6 @@ namespace OneDriveSamples.SaveToOneDrive
                 {
                     LiveConnectSession session = await authClient.ExchangeAuthCodeAsync(result.AuthorizeCode);
                     var OneDrive = new OneDriveClient(new LiveConnectClient(session));
-                    Properties.Settings.Default.RefreshToken = session.RefreshToken;
                     return OneDrive;
                 }
                 catch (LiveAuthException aex)

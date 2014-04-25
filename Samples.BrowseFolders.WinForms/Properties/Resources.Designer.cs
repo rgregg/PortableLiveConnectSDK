@@ -59,5 +59,14 @@ namespace OneDriveSamples.BrowseFolders.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 000000004C116A46.
+        /// </summary>
+        internal static string ONEDRIVE_CLIENT_ID {
+            get {
+                return ResourceManager.GetString("ONEDRIVE_CLIENT_ID", resourceCulture);
+            }
+        }
     }
 }
