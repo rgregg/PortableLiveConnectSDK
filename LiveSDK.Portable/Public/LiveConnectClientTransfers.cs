@@ -18,12 +18,12 @@ namespace Microsoft.Live
     {
         #region DownloadAsync Overrides
 
-        public Task<LiveDownloadOperationResult> DownloadAsync(string path, IBackgroundTransferProvider btu)
+        public Task<LiveDownloadOperationResult> DownloadAsync(string path, IBackgroundTransferProvider btu = null, IProgress<LiveOperationProgress> progress = null)
         {
-            return this.DownloadAsync(path, btu, new CancellationToken(false), null);
+            return this.DownloadAsync(path, btu, new CancellationToken(false), progress);
         }
 
-        public Task<LiveDownloadOperationResult> DownloadAsync(string path, IFileSource destination, IBackgroundTransferProvider btu)
+        public Task<LiveDownloadOperationResult> DownloadAsync(string path, IFileSource destination, IBackgroundTransferProvider btu = null, IProgress<LiveOperationProgress> progress = null)
         {
             if (path == null)
             {
@@ -43,7 +43,7 @@ namespace Microsoft.Live
                    String.Format(CultureInfo.CurrentUICulture, ResourceHelper.GetString("InvalidNullParameter"), "destination"));
             }
 
-            return this.InternalDownloadAsync(path, destination, btu, new CancellationToken(false), null);
+            return this.InternalDownloadAsync(path, destination, btu, new CancellationToken(false), progress);
         }
 
         public Task<LiveDownloadOperationResult> DownloadAsync(string path, IBackgroundTransferProvider btu, CancellationToken ct, IProgress<LiveOperationProgress> progress)
@@ -105,9 +105,9 @@ namespace Microsoft.Live
 
         #region UploadAsync Overrides
 
-        public Task<LiveOperationResult> UploadAsync(string path, IFileSource fileSource, OverwriteOption option, IBackgroundTransferProvider btu)
+        public Task<LiveOperationResult> UploadAsync(string path, IFileSource fileSource, OverwriteOption option, IBackgroundTransferProvider btu = null, IProgress<LiveOperationProgress> progress = null)
         {
-            return this.UploadAsync(path, fileSource, option, btu, new CancellationToken(false), null);
+            return this.UploadAsync(path, fileSource, option, btu, new CancellationToken(false), progress);
         }
 
         public Task<LiveOperationResult> UploadAsync(string path, IFileSource fileSource, OverwriteOption option, IBackgroundTransferProvider btu, CancellationToken ct, IProgress<LiveOperationProgress> progress)

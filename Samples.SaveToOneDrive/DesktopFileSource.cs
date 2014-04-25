@@ -25,5 +25,11 @@ namespace OneDriveSamples.SaveToOneDrive
             FileStream stream = new FileStream(this.LocalPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             return stream;
         }
+
+        public System.IO.Stream GetWriteStream()
+        {
+            FileStream stream = new FileStream(this.LocalPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+            return stream;
+        }
     }
 }

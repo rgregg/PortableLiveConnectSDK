@@ -13,22 +13,14 @@ using Microsoft.OneDrive;
 
 namespace OneDriveSamples.SaveToOneDrive
 {
-    public partial class FormSaveToOneDrive : Form, IRefreshTokenHandler
+    public partial class FormSaveToOneDrive : Form, IProgress<LiveOperationProgress>
     {
-        
-        private LiveAuthClient AuthClient;
-        private OneDriveClient OneDrive;
+
+        private OneDriveClient ODClient { get; set; }
         
         public FormSaveToOneDrive()
         {
             InitializeComponent();
-
-            AuthClient = new Microsoft.Live.LiveAuthClient(Properties.Resources.ONEDRIVE_CLIENT_ID, this);
-        }
-
-        private string[] GetAuthScopes()
-        {
-            return new string[] { "wl.skydrive_update" };
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -57,65 +49,91 @@ namespace OneDriveSamples.SaveToOneDrive
             }
 
             DesktopFileSource selectedFile = new DesktopFileSource(textBoxLocalFile.Text);
-            
-            if (null == OneDrive)
+            OneDriveItem uploadedItem = await UploadToOneDriveAsync(selectedFile);
+
+            if (null != uploadedItem)
             {
-                this.OneDrive = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, new string[] { "wl.skydrive_update" });
-                if (null == this.OneDrive)
-                {
-                    MessageBox.Show("Failed to connect to OneDrive. Try again later.");
-                    return;
-                }
+                textBoxFileIdentifer.Text = uploadedItem.Identifier;
+                MessageBox.Show("Upload complete");
             }
-            
+        }
+
+        private async void buttonDownload_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxFileIdentifer.Text))
+            {
+                MessageBox.Show("You need to specify a file ID to download.");
+                return;
+            }
+
             try
             {
-                await UploadFileToOneDrive(selectedFile);
-                MessageBox.Show("File uploaded: " + selectedFile.Filename);
+                OneDriveItem itemToDownload = await ODClient.GetItemFromIdentifier(textBoxFileIdentifer.Text);
+                if (null != itemToDownload)
+                {
+                    Stream contentsOfFile = await DownloadFileAsync(itemToDownload);
+                    
+                    var outputStream = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), itemToDownload.Name), FileMode.Create, FileAccess.Write);
+                    await contentsOfFile.CopyToAsync(outputStream);
+                    await outputStream.FlushAsync();
+                    outputStream.Close();
+                }
+                
+                MessageBox.Show("Downloaded to your desktop as " + itemToDownload.Name);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error downloading file: " + ex.Message);
+            }
+        }
+
+        private async Task<OneDriveItem> UploadToOneDriveAsync(DesktopFileSource selectedFile)
+        {
+            bool isConnected = await ConnectToOneDriveAsync();
+            if (!isConnected) return null;
+
+            OneDriveItem uploadedItem = null;
+            try
+            {
+                OneDriveItem rootFolder = await ODClient.GetOneDriveRootAsync();
+                OneDriveItem[] itemsInRootFolder = await rootFolder.GetChildItemsAsync();
+                uploadedItem = await rootFolder.UploadFileAsync(selectedFile, OverwriteOption.Rename, null, this);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+
+            return uploadedItem;
         }
 
-        private async Task UploadFileToOneDrive(IFileSource fileToUpload)
+        private async Task<bool> ConnectToOneDriveAsync()
         {
-            OneDriveItem rootFolder = await OneDrive.GetOneDriveRootAsync();
-            OneDriveItem[] itemsInRootFolder = await rootFolder.GetChildItemsAsync();
-
-            var uploadedItem = await rootFolder.UploadFileAsync(fileToUpload, OverwriteOption.Rename, null);
-
-            Stream downloadDataStream = await uploadedItem.DownloadFileAsync();
-
-            var outputStream = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "download.txt"), FileMode.Create, FileAccess.Write);
-            await downloadDataStream.CopyToAsync(outputStream);
-            await outputStream.FlushAsync();
-            outputStream.Close();
-        }
-
-        
-
-        private async Task LogInToOneDrive()
-        {
-            
-        }
-
-        public async Task SaveRefreshTokenAsync(RefreshTokenInfo tokenInfo)
-        {
-            Properties.Settings.Default.RefreshToken = tokenInfo.RefreshToken;
-            Properties.Settings.Default.Save();
-        }
-
-        public async Task<RefreshTokenInfo> RetrieveRefreshTokenAsync()
-        {
-            string storedToken = Properties.Settings.Default.RefreshToken;
-            if (!string.IsNullOrEmpty(storedToken))
+            if (null == ODClient)
             {
-                return new RefreshTokenInfo(storedToken);
+                this.ODClient = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, new string[] { "wl.skydrive_update" });
+                if (null == this.ODClient)
+                {
+                    MessageBox.Show("Failed to connect to OneDrive. Try again later.");
+                    return false;
+                }
             }
-            
-            return null;
+            return true;
         }
+
+        private async Task<Stream> DownloadFileAsync(OneDriveItem file)
+        {
+            bool isConnected = await ConnectToOneDriveAsync();
+            if (!isConnected) return null;
+
+            return await file.DownloadFileAsync(null, this);
+        }
+
+        public void Report(LiveOperationProgress value)
+        {
+            this.Invoke(new MethodInvoker(() => { progressBar.Value = (int)value.ProgressPercentage; }));
+        }
+
+ 
     }
 }

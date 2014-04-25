@@ -95,7 +95,7 @@ namespace Microsoft.OneDrive
 
         
 
-        public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null)
+        public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
         {
             if (this.ItemType != OneDriveItemType.Folder && this.ItemType != OneDriveItemType.Album)
             {
@@ -106,22 +106,23 @@ namespace Microsoft.OneDrive
                 string.Format("/{0}",  this.Identifier), 
                 sourceItem, 
                 option, 
-                btp);
+                btp, 
+                progress);
 
             System.Diagnostics.Debug.WriteLine("UploadFile Result: {0}", result.RawResult);
 
             FileUploadResult fur = FileUploadResult.FromJson(result.RawResult);
-            return await this.Client.GetFileProperties(fur.Identifier);
+            return await this.Client.GetItemFromIdentifier(fur.Identifier);
         }
 
-        public async Task<System.IO.Stream> DownloadFileAsync(IBackgroundTransferProvider btp = null)
+        public async Task<System.IO.Stream> DownloadFileAsync(IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
         {
             if (this.ItemType != OneDriveItemType.GenericFile)
             {
                 throw new InvalidOperationException("Cannot download items that are not files");
             }
 
-            LiveDownloadOperationResult result = await Client.LiveClient.DownloadAsync(string.Format("/{0}/content", this.Identifier), btp);
+            LiveDownloadOperationResult result = await Client.LiveClient.DownloadAsync(string.Format("/{0}/content", this.Identifier), btp, progress);
             return result.Stream;
         }
 

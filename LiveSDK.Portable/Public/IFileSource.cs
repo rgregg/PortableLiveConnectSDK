@@ -10,5 +10,6 @@ namespace Microsoft.Live
         string Filename { get; }
 
         System.IO.Stream GetReadStream();
+        System.IO.Stream GetWriteStream();
     }
 }
