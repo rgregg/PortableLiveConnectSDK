@@ -44,6 +44,7 @@
     <Compile Include="Public\OneDriveClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Public\OneDriveItem.cs" />
+    <Compile Include="Public\OneDriveItemType.cs" />
     <Compile Include="Public\OneDriveUser.cs" />
     <Compile Include="Public\SharingAccessScope.cs" />
   </ItemGroup>

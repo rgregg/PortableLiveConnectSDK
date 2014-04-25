@@ -104,7 +104,14 @@ namespace OneDriveSamples.SaveToOneDrive
             OneDriveItem rootFolder = await OneDrive.GetOneDriveRootAsync();
             OneDriveItem[] itemsInRootFolder = await rootFolder.GetChildItemsAsync();
 
-            await rootFolder.UploadFileAsync(fileToUpload, OverwriteOption.Rename, null);
+            var uploadedItem = await rootFolder.UploadFileAsync(fileToUpload, OverwriteOption.Rename, null);
+
+            Stream downloadDataStream = await uploadedItem.DownloadFileAsync();
+
+            var outputStream = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "download.txt"), FileMode.Create, FileAccess.Write);
+            await downloadDataStream.CopyToAsync(outputStream);
+            await outputStream.FlushAsync();
+            outputStream.Close();
         }
 
         private async Task<bool> OnAuthComplete(AuthResult result)

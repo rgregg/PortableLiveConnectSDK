@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,25 @@ namespace Microsoft.OneDrive
         public string ClientUpdatedTime { get; set; }
         #endregion
 
+        public OneDriveItemType ItemType
+        {
+            get
+            {
+                switch (this.Type)
+                {
+                    case "folder": 
+                        return OneDriveItemType.Folder;
+                    case "album":
+                        return OneDriveItemType.Album;
+                    case "file":
+                        return OneDriveItemType.GenericFile;
+                    default:
+                        return OneDriveItemType.Unspecified;
+                }
+            }
+        }
+
+
         public async Task<OneDriveItem[]> GetChildItemsAsync()
         {
             var result = await Client.LiveClient.GetAsync(string.Format("/{0}/files", this.Identifier));
@@ -73,8 +93,15 @@ namespace Microsoft.OneDrive
             return objects.ToArray();
         }
 
+        
+
         public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null)
         {
+            if (this.ItemType != OneDriveItemType.Folder && this.ItemType != OneDriveItemType.Album)
+            {
+                throw new InvalidOperationException("Cannot upload files to items that do not represent a folder or album");
+            }
+
             LiveOperationResult result = await Client.LiveClient.UploadAsync(
                 string.Format("/{0}",  this.Identifier), 
                 sourceItem, 
@@ -85,6 +112,17 @@ namespace Microsoft.OneDrive
 
             FileUploadResult fur = FileUploadResult.FromJson(result.RawResult);
             return await this.Client.GetFileProperties(fur.Identifier);
+        }
+
+        public async Task<System.IO.Stream> DownloadFileAsync(IBackgroundTransferProvider btp = null)
+        {
+            if (this.ItemType != OneDriveItemType.GenericFile)
+            {
+                throw new InvalidOperationException("Cannot download items that are not files");
+            }
+
+            LiveDownloadOperationResult result = await Client.LiveClient.DownloadAsync(string.Format("/{0}/content", this.Identifier), btp);
+            return result.Stream;
         }
 
 

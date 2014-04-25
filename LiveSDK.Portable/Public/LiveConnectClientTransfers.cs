@@ -60,6 +60,11 @@ namespace Microsoft.Live
                     String.Format(CultureInfo.CurrentUICulture, ResourceHelper.GetString("UrlInvalid"), "path"));
             }
 
+            if (null == btu)
+            {
+                btu = new Microsoft.Live.Transfers.BasicTransferProvider();
+            }
+
             return this.InternalDownloadAsync(path, null, btu, ct, progress);
         }
 
