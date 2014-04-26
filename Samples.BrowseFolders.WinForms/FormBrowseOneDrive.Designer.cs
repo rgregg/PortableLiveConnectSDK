@@ -31,6 +31,7 @@
             this.flowPanelHierarchy = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonLogin = new System.Windows.Forms.Button();
             this.flowPanelItems = new System.Windows.Forms.FlowLayoutPanel();
+            this.comboBoxScope = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // flowPanelHierarchy
@@ -64,17 +65,35 @@
             this.flowPanelItems.Size = new System.Drawing.Size(715, 351);
             this.flowPanelItems.TabIndex = 2;
             // 
+            // comboBoxScope
+            // 
+            this.comboBoxScope.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxScope.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxScope.FormattingEnabled = true;
+            this.comboBoxScope.Items.AddRange(new object[] {
+            "Files",
+            "Recent Docs",
+            "All Photos",
+            "Shared"});
+            this.comboBoxScope.Location = new System.Drawing.Point(599, 23);
+            this.comboBoxScope.Name = "comboBoxScope";
+            this.comboBoxScope.Size = new System.Drawing.Size(128, 21);
+            this.comboBoxScope.TabIndex = 3;
+            this.comboBoxScope.SelectedIndexChanged += new System.EventHandler(this.comboBoxScope_SelectedIndexChanged);
+            // 
             // FormBrowseOneDrive
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(739, 458);
+            this.Controls.Add(this.comboBoxScope);
             this.Controls.Add(this.flowPanelItems);
             this.Controls.Add(this.buttonLogin);
             this.Controls.Add(this.flowPanelHierarchy);
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FormBrowseOneDrive";
             this.Text = "OneDrive Browser";
+            this.Load += new System.EventHandler(this.FormBrowseOneDrive_Load);
             this.ResumeLayout(false);
 
         }
@@ -84,5 +103,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowPanelHierarchy;
         private System.Windows.Forms.Button buttonLogin;
         private System.Windows.Forms.FlowLayoutPanel flowPanelItems;
+        private System.Windows.Forms.ComboBox comboBoxScope;
     }
 }

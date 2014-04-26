@@ -71,15 +71,16 @@ namespace OneDriveSamples
         }
 
         #region Static Methods
-
         
-        public static async Task<Microsoft.OneDrive.OneDriveClient> GetOneDriveClientAsync(string clientId, string[] scopes, string refreshToken = null)
+        public static async Task<Microsoft.OneDrive.OneDriveClient> GetOneDriveClientAsync(string clientId, OneDriveScopes[] scopes, string refreshToken = null)
         {
             LiveAuthClient authClient = new LiveAuthClient(clientId);
+            var authScopes = from s in scopes select OAuthScopeAttribute.OAuthScopeForEnumValue(s);
 
             if (null == refreshToken)
             {
-                string startUrl = authClient.GetLoginUrl(scopes);
+                
+                string startUrl = authClient.GetLoginUrl(authScopes);
                 string endUrl = OAuthDesktopEndPoint;
                 FormMicrosoftAccountAuth authForm = new FormMicrosoftAccountAuth(startUrl, endUrl);
 
@@ -92,7 +93,7 @@ namespace OneDriveSamples
             }
             else
             {
-                LiveLoginResult result = await authClient.IntializeAsync(scopes);
+                LiveLoginResult result = await authClient.IntializeAsync(authScopes);
                 LiveConnectSession session = result.Session;
                 return new OneDriveClient(new LiveConnectClient(session));
             }

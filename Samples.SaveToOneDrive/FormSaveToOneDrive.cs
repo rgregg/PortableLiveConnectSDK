@@ -111,7 +111,8 @@ namespace OneDriveSamples.SaveToOneDrive
         {
             if (null == ODClient)
             {
-                this.ODClient = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, new string[] { "wl.skydrive_update" });
+                this.ODClient = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID,
+                    new OneDriveScopes[] { OneDriveScopes.ReadWrite });
                 if (null == this.ODClient)
                 {
                     MessageBox.Show("Failed to connect to OneDrive. Try again later.");

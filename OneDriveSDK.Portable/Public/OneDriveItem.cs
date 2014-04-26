@@ -17,7 +17,7 @@ namespace Microsoft.OneDrive
     /// </summary>
     public class OneDriveItem
     {
-        protected OneDriveClient Client { get; set; }
+        internal OneDriveClient Client { get; set; }
         internal static OneDriveItem CreateFromRawJson(string rawJsonData, OneDriveClient sourceClient)
         {
             OneDriveItem item = JsonConvert.DeserializeObject<OneDriveItem>(rawJsonData);
@@ -85,18 +85,7 @@ namespace Microsoft.OneDrive
             var result = await Client.LiveClient.GetAsync(string.Format("/{0}/files", this.Identifier));
             System.Diagnostics.Debug.WriteLine("json: {0}", result.RawResult);
 
-            JObject obj = (JObject)JsonConvert.DeserializeObject(result.RawResult);
-            var dataReader = obj["data"].CreateReader();
-
-            var serializer = new JsonSerializer();
-            var objects = serializer.Deserialize<List<OneDriveItem>>(dataReader);
-
-            foreach (OneDriveItem item in objects)
-            {
-                item.Client = this.Client;
-            }
-
-            return objects.ToArray();
+            return OneDriveClient.ConvertDataResponseToItems(result.RawResult, this.Client);
         }
 
         
