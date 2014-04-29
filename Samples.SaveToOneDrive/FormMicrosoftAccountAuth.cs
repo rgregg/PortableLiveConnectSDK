@@ -72,30 +72,25 @@ namespace OneDriveSamples
 
         #region Static Methods
         
-        public static async Task<Microsoft.OneDrive.OneDriveClient> GetOneDriveClientAsync(string clientId, OneDriveScopes[] scopes, string refreshToken = null)
+        public static async Task<Microsoft.OneDrive.OneDriveClient> GetOneDriveClientAsync(string clientId, OneDriveScopes[] scopes, IRefreshTokenHandler refreshTokenHandler = null)
         {
-            LiveAuthClient authClient = new LiveAuthClient(clientId);
+            LiveAuthClient authClient = new LiveAuthClient(clientId, refreshTokenHandler);
             var authScopes = from s in scopes select OAuthScopeAttribute.OAuthScopeForEnumValue(s);
 
-            if (null == refreshToken)
+            LiveLoginResult loginResult = await authClient.IntializeAsync(authScopes);
+            if (loginResult.Status == LiveConnectSessionStatus.Connected)
             {
-                
-                string startUrl = authClient.GetLoginUrl(authScopes);
-                string endUrl = OAuthDesktopEndPoint;
-                FormMicrosoftAccountAuth authForm = new FormMicrosoftAccountAuth(startUrl, endUrl);
-
-                DialogResult result = await authForm.ShowDialogAsync();
-
-                if (DialogResult.OK == result)
-                {
-                    return await OnAuthComplete(authClient, authForm.AuthResult);
-                }
+                return new OneDriveClient(new LiveConnectClient(loginResult.Session));
             }
-            else
+
+            string startUrl = authClient.GetLoginUrl(authScopes);
+            string endUrl = OAuthDesktopEndPoint;
+            FormMicrosoftAccountAuth authForm = new FormMicrosoftAccountAuth(startUrl, endUrl);
+
+            DialogResult result = await authForm.ShowDialogAsync();
+            if (DialogResult.OK == result)
             {
-                LiveLoginResult result = await authClient.IntializeAsync(authScopes);
-                LiveConnectSession session = result.Session;
-                return new OneDriveClient(new LiveConnectClient(session));
+                return await OnAuthComplete(authClient, authForm.AuthResult);
             }
 
             return null;

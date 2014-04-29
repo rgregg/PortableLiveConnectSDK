@@ -11,7 +11,7 @@ using Microsoft.OneDrive;
 
 namespace OneDriveSamples.BrowseFolders
 {
-    public partial class FormBrowseOneDrive : Form
+    public partial class FormBrowseOneDrive : Form, Microsoft.Live.IRefreshTokenHandler
     {
         private OneDriveClient ODClient { get; set; }
         private OneDriveItem CurrentFolder { get; set; }
@@ -33,7 +33,8 @@ namespace OneDriveSamples.BrowseFolders
         {
             if (null == ODClient)
             {
-                ODClient = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, new OneDriveScopes[] { OneDriveScopes.ReadWrite, OneDriveScopes.Photos, OneDriveScopes.SharedItems, OneDriveScopes.OfflineAccess });
+                ODClient = await FormMicrosoftAccountAuth.GetOneDriveClientAsync(Properties.Resources.ONEDRIVE_CLIENT_ID, 
+                    new OneDriveScopes[] { OneDriveScopes.ReadWrite, OneDriveScopes.Photos, OneDriveScopes.SharedItems, OneDriveScopes.OfflineAccess }, this);
                 if (null != ODClient)
                 {
                     buttonLogin.Text = "Logout";
@@ -43,6 +44,10 @@ namespace OneDriveSamples.BrowseFolders
             else
             {
                 ODClient = null;
+
+                Properties.Settings.Default.RefreshToken = null;
+                Properties.Settings.Default.Save();
+
                 buttonLogin.Text = "Login";
             }
         }
@@ -204,6 +209,21 @@ namespace OneDriveSamples.BrowseFolders
         private void comboBoxScope_SelectedIndexChanged(object sender, EventArgs e)
         {
             OnRootFolderChange((RootFolders)comboBoxScope.SelectedIndex);
+        }
+
+        public async Task SaveRefreshTokenAsync(Microsoft.Live.RefreshTokenInfo tokenInfo)
+        {
+            Properties.Settings.Default.RefreshToken = tokenInfo.RefreshToken;
+            Properties.Settings.Default.Save();
+        }
+
+        public async Task<Microsoft.Live.RefreshTokenInfo> RetrieveRefreshTokenAsync()
+        {
+            var savedToken = Properties.Settings.Default.RefreshToken;
+            if (!string.IsNullOrEmpty(savedToken))
+                return new Microsoft.Live.RefreshTokenInfo(savedToken);
+
+            return null;
         }
     }
 }

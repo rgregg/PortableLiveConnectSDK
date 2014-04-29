@@ -61,6 +61,10 @@ namespace Microsoft.OneDrive
         public string ClientUpdatedTime { get; set; }
         #endregion
 
+        #region Public Methods
+        /// <summary>
+        /// Enum that indicates the type of object represented by this OneDriveItem.
+        /// </summary>
         public OneDriveItemType ItemType
         {
             get
@@ -79,38 +83,13 @@ namespace Microsoft.OneDrive
             }
         }
 
-
-        public async Task<OneDriveItem[]> GetChildItemsAsync()
-        {
-            var result = await Client.LiveClient.GetAsync(string.Format("/{0}/files", this.Identifier));
-            System.Diagnostics.Debug.WriteLine("json: {0}", result.RawResult);
-
-            return OneDriveClient.ConvertDataResponseToItems(result.RawResult, this.Client);
-        }
-
-        
-
-        public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
-        {
-            if (this.ItemType != OneDriveItemType.Folder && this.ItemType != OneDriveItemType.Album)
-            {
-                throw new InvalidOperationException("Cannot upload files to items that do not represent a folder or album");
-            }
-
-            LiveOperationResult result = await Client.LiveClient.UploadAsync(
-                string.Format("/{0}",  this.Identifier), 
-                sourceItem, 
-                option, 
-                btp, 
-                progress);
-
-            System.Diagnostics.Debug.WriteLine("UploadFile Result: {0}", result.RawResult);
-
-            FileUploadResult fur = FileUploadResult.FromJson(result.RawResult);
-            return await this.Client.GetItemFromIdentifier(fur.Identifier);
-        }
-
-        public async Task<System.IO.Stream> DownloadFileAsync(IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
+        /// <summary>
+        /// Downloads the contents of a file represented by this OneDriveItem.
+        /// </summary>
+        /// <param name="btp"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        public async Task<System.IO.Stream> DownloadContentsAsync(IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
         {
             if (this.ItemType != OneDriveItemType.GenericFile)
             {
@@ -121,6 +100,89 @@ namespace Microsoft.OneDrive
             return result.Stream;
         }
 
+        /// <summary>
+        /// Delete the item represented by this OneDriveItem. If the item is a folder or album, the contents of the folder will also be deleted.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> DeleteAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Upload changes to this items meta data back to the service.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> SaveAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Moves the current item to a new parent item. Can move a folder to a new parent, or move a file into a new folder.
+        /// </summary>
+        /// <param name="parentItem"></param>
+        /// <returns></returns>
+        public async Task<bool> MoveToNewParentAsync(OneDriveItem parentItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the collection of OneDriveItem objects that are parented to the current item. The current item
+        /// must be a folder or album, otherwise this command will fail.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<OneDriveItem[]> GetChildItemsAsync()
+        {
+            var result = await Client.LiveClient.GetAsync(string.Format("/{0}/files", this.Identifier));
+            System.Diagnostics.Debug.WriteLine("json: {0}", result.RawResult);
+
+            return OneDriveClient.ConvertDataResponseToItems(result.RawResult, this.Client);
+        }
+
+        /// <summary>
+        /// Uploads a file into the OneDriveItem this command is called on. This command is only available on OneDriveItem instances that represents
+        /// a folder or album.
+        /// </summary>
+        /// <param name="sourceItem"></param>
+        /// <param name="option"></param>
+        /// <param name="btp"></param>
+        /// <param name="progress"></param>
+        /// <returns></returns>
+        public async Task<OneDriveItem> UploadFileAsync(IFileSource sourceItem, OverwriteOption option, IBackgroundTransferProvider btp = null, IProgress<LiveOperationProgress> progress = null)
+        {
+            if (this.ItemType != OneDriveItemType.Folder && this.ItemType != OneDriveItemType.Album)
+            {
+                throw new InvalidOperationException("Cannot upload files to items that do not represent a folder or album");
+            }
+
+            LiveOperationResult result = await Client.LiveClient.UploadAsync(
+                string.Format("/{0}", this.Identifier),
+                sourceItem,
+                option,
+                btp,
+                progress);
+
+            System.Diagnostics.Debug.WriteLine("UploadFile Result: {0}", result.RawResult);
+
+            FileUploadResult fur = FileUploadResult.FromJson(result.RawResult);
+            return await this.Client.GetItemFromIdentifier(fur.Identifier);
+        }
+
+        /// <summary>
+        /// Creates a new subfolder as a child of the current item. If the item is not a folder or alubm, the command will throw an error.
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <returns></returns>
+        public async Task<OneDriveItem> CreateChildFolderAsync(string folderName)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        #endregion
 
 
     }

@@ -127,7 +127,7 @@ namespace OneDriveSamples.SaveToOneDrive
             bool isConnected = await ConnectToOneDriveAsync();
             if (!isConnected) return null;
 
-            return await file.DownloadFileAsync(null, this);
+            return await file.DownloadContentsAsync(null, this);
         }
 
         public void Report(LiveOperationProgress value)

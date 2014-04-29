@@ -50,6 +50,7 @@
     <Compile Include="Public\OneDriveUser.cs" />
     <Compile Include="Public\Quota.cs" />
     <Compile Include="Public\SharingAccessScope.cs" />
+    <Compile Include="Public\ThumbnailSize.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
